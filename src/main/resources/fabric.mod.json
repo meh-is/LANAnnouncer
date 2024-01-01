@@ -3,15 +3,15 @@
 	"id": "lanannouncer",
 	"version": "${version}",
 	"name": "LANAnnouncer",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Announces the server to the LAN using multicast UDP.",
 	"authors": [
-		"Me!"
+		"Gunnar Guðvarðarson"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/meh-is/LANAnnouncer",
+		"issues": "https://github.com/meh-is/LANAnnouncer/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/lanannouncer/icon.png",
 	"environment": "server",
 	"entrypoints": {
@@ -24,8 +24,5 @@
 		"minecraft": "~1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
