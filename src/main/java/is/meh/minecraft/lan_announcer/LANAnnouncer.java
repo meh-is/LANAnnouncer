@@ -2,6 +2,7 @@ package is.meh.minecraft.lan_announcer;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,16 @@ public class LANAnnouncer implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.debug("onInitialize");
-        ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
-        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
+        if (FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.SERVER) {
+            ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
+            ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
+        } else {
+            LOGGER.warn(
+                "This mod is only intended for dedicated multiplayer" +
+                "servers, not clients. Clients can start their own built-in" +
+                "LAN broadcast by using `Open to LAN`"
+            );
+        }
     }
 
     // Prevent conflicts with the packet payload
@@ -32,14 +40,10 @@ public class LANAnnouncer implements ModInitializer {
     }
 
     private void onServerStarted(MinecraftServer server) {
-        LOGGER.info("onServerStarted");
         String motd = sanitizeMOTD(server.getServerMotd());
         int server_port = server.getServerPort();
 
-        String payload = "[MOTD]" + motd + "[/MOTD][AD]" + server_port + "[/AD]";
-        LOGGER.info("payload: {}", payload);
-
-        byte[] message = payload.getBytes();
+        byte[] message = ("[MOTD]" + motd + "[/MOTD][AD]" + server_port + "[/AD]").getBytes();
 
         // Initialize and start the IPv4 and IPv6 announcers
         ipv4Announcer = new ServerAnnouncer("224.0.2.60", message);
@@ -47,17 +51,11 @@ public class LANAnnouncer implements ModInitializer {
 
         ipv6Announcer = new ServerAnnouncer("ff75:230::60", message);
         ipv6Announcer.startAnnouncing();
-
-        LOGGER.debug("started");
     }
 
     private void onServerStopping(MinecraftServer server) {
-        LOGGER.info("onServerStopping");
-
         ipv4Announcer.stopAnnouncing();
         ipv6Announcer.stopAnnouncing();
-
-        LOGGER.debug("stopped...");
     }
 
     static class ServerAnnouncer {
