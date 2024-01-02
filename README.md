@@ -30,6 +30,7 @@ Over UDP port `4445` to the IP addresses:
 # Published on
 
 - https://modrinth.com/mod/lan-announcer
+- https://curseforge.com/minecraft/mc-mods/lan-announcer
 
 # Credits
 
