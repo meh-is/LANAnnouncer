@@ -44,7 +44,10 @@ public class LANAnnouncer implements ModInitializer {
         String motd = "[MOTD]" + sanitizeMOTD(server.getServerMotd()) + "[/MOTD]";
         String port = "[AD]" + server.getServerPort() + "[/AD]";
 
-        byte[] message = (motd + port).getBytes();
+        // https://github.com/meh-is/LANAnnouncer/issues/5#issuecomment-1873572736
+        String uuid = "[LAN_SERVER_ID]" + UUID.randomUUID() + "[/LAN_SERVER_ID]";
+
+        byte[] message = (motd + port + uuid).getBytes();
 
         // Initialize and start the IPv4 and IPv6 announcers
         ipv4Announcer = new ServerAnnouncer("224.0.2.60", message);
