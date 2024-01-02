@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,10 +41,10 @@ public class LANAnnouncer implements ModInitializer {
     }
 
     private void onServerStarted(MinecraftServer server) {
-        String motd = sanitizeMOTD(server.getServerMotd());
-        int server_port = server.getServerPort();
+        String motd = "[MOTD]" + sanitizeMOTD(server.getServerMotd()) + "[/MOTD]";
+        String port = "[AD]" + server.getServerPort() + "[/AD]";
 
-        byte[] message = ("[MOTD]" + motd + "[/MOTD][AD]" + server_port + "[/AD]").getBytes();
+        byte[] message = (motd + port).getBytes();
 
         // Initialize and start the IPv4 and IPv6 announcers
         ipv4Announcer = new ServerAnnouncer("224.0.2.60", message);
